@@ -24,7 +24,7 @@ export default function handler(req, res) {
                 }
 
                 if (rows.length === 0) {
-                    return res.status(400).send({ message: 'Reciever ID doesn\'t exist' });
+                    return res.status(400).send({ message: 'No Messages With That Reciever ID.' });
                 }
 
                 messages.append(rows);
@@ -34,8 +34,8 @@ export default function handler(req, res) {
                 , (err, rows, fields) => {
                     if (err) {
                         if (err.errno === 1062) { // MySQL error code for duplicate entry
-                            if (new RegExp(/('reciever_id')$/).test(err.message)) { /* Regex match to check error */
-                                return res.status(409).send({ message: 'Reciever ID doesn`t exist' })
+                            if (new RegExp(/('sender_id')$/).test(err.message)) { /* Regex match to check error */
+                                return res.status(409).send({ message: 'Sender ID doesn`t exist' })
                             }
                         }
     
@@ -43,7 +43,7 @@ export default function handler(req, res) {
                     }
     
                     if (rows.length === 0) {
-                        return res.status(400).send({ message: 'Reciever ID doesn\'t exist' });
+                        return res.status(400).send({ message: 'No Messages With That Sender ID.' });
                     }
     
                     messages.append(rows);
