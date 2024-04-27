@@ -2,7 +2,7 @@ import pool from '../../services/pool'
 
 export default function handler(req, res) {
     return new Promise((resolve, reject) => {
-        if (req.method === 'POST') {
+        if (req.method === 'GET') {
             const { username, email, password } = req.body;
 
             if (email == null)
