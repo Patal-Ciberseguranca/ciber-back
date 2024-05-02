@@ -34,12 +34,9 @@ export default function handler(req, res) {
                             return res.status(409).send({ message: 'Username Doesn\'t Exist' })
                         }
                     }
-
                     return res.status(500).send({ err })
                 }
-
                 return res.status(200).send(rows)
-
             })
         } else {
             return res.status(405).send({ message: 'Request not allowed' })

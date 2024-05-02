@@ -18,12 +18,11 @@ export default function handler(req, res) {
             [username]
             , (err, rows, fields) => {
                 if (err) {
-                    if (err.errno === 1062) { // MySQL error code for duplicate entry
-                        if (new RegExp(/('username')$/).test(err.message)) { /* Regex match to check error */
+                    if (err.errno === 1062) {
+                        if (new RegExp(/('username')$/).test(err.message)) {
                             return res.status(409).send({ message: 'Username doesn`t exist' })
                         }
                     }
-
                     return res.status(500).send({ err })
                 }
 
@@ -31,11 +30,15 @@ export default function handler(req, res) {
                     return res.status(400).send({ message: 'Username doesn\'t exist' });
                 }
 
+                /*  TO-DO
+                    Decifrar a Password Usando a do Campo Enviado para Conferir
+                    const decryptedPassword = decrypt(rows[0].password, password) 
+                */
+               
                 if (rows[0].password === password) {
                     return res.status(200).send(rows)
                 }
                 return res.status(400).send({ message: 'Incorrect password' })
-
             })
         } else {
             return res.status(405).send({ message: 'Request not allowed' })

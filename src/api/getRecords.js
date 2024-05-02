@@ -7,7 +7,6 @@ export default function handler(req, res) {
 
             if (username == null)
                 return res.status(422).send({ message: 'Missing Username' })
-
             
             if (date == null) {
                 pool.query('SELECT * FROM records WHERE username = ?', [username] , (err, rows, fields) => {
@@ -29,7 +28,6 @@ export default function handler(req, res) {
                         TO-DO
                         Decifrar cada uma das mensagens do array retornado da BD
                     */
-
                     return res.status(200).send(rows);
                 })
             } else {
@@ -40,7 +38,6 @@ export default function handler(req, res) {
                                 return res.status(409).send({ message: 'Username doesn\'t exist' })
                             }
                         }
-
                         return res.status(500).send({ err })
                     }
 
