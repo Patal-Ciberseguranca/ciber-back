@@ -4,10 +4,7 @@ import { Encrypt, Decrypt } from '../../services/cipher'
 export default function handler(req, res) {
     return new Promise((resolve, reject) => {
         if (req.method === 'GET') {
-            const { username, email, password } = req.body;
-
-            if (email == null)
-                return res.status(422).send({ message: 'Missing E-Mail' })
+            const { username, password } = req.body;
 
             if (username == null)
                 return res.status(422).send({ message: 'Missing Username' })
