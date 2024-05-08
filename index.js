@@ -1,6 +1,7 @@
 const express = require('express');
 const collection = require('./mongo');
 const cors = require('cors');
+const bcrypt = require('bcryptjs'); 
 const app = express();
 
 app.use(express.json());
@@ -16,36 +17,43 @@ app.post('/login', async (req, res) => {
     const check = await collection.findOne({ username: username });
 
     if (check) {
-      res.json('exist');
+      const matchPassword = await bcrypt.compare(password, check.password);
+      if (matchPassword){
+        res.json('Sucesso');
+      } else {
+        res.json('PasswordErrada')
+      }
     } else {
-      res.json('notexist');
+      res.json('UtilizadorNaoExiste');
     }
-  } catch (e) {
-    res.json('notexist');
-    console.log(e);
+  } catch (e){
+  res.status(500).json('Erro');
+  console.log(e);
   }
 });
 
 app.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
-  const data = {
-    username: username,
-    email: email,
-    password: password,
-  };
-
   try {
     const check = await collection.findOne({ username: username });
 
     if (check) {
-      res.json('exist');
+      res.json('UtilizadorExiste');
     } else {
-      res.json('notexist');
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const data = {
+        username: username,
+        email: email,
+        password: hashedPassword,
+      };
+    
       await collection.insertMany([data]);
+      res.json('Sucesso');
     }
   } catch (e) {
-    res.json('notexist');
+    res.status(500).json('Erro');
     console.log(e);
   }
 });
