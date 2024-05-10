@@ -3,6 +3,8 @@ const collection = require('./mongo');
 const cors = require('cors');
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+
 const app = express();
 
 app.use(express.json());
@@ -66,7 +68,9 @@ app.post('/register', async (req, res) => {
     if (check) {
       res.json('UtilizadorExiste');
     } else {
+      // Criar Hash da Password usando BCrypt
       const hashedPassword = await bcrypt.hash(password, 10);
+
 
       const data = {
         username: username,
@@ -75,6 +79,7 @@ app.post('/register', async (req, res) => {
       };
     
       await collection.insertMany([data]);
+      
       // Criação do token JWT
       const token = jwt.sign({ id: data._id }, JWT_SECRET, {
         expiresIn: 86400 // expira em 24 horas
@@ -82,6 +87,7 @@ app.post('/register', async (req, res) => {
       res.header('authorization', token)
       res.json({token, userId:data._id, message:'Sucesso'});
     }
+
   } catch (e) {
     res.status(500).json('Erro');
     console.log(e);
