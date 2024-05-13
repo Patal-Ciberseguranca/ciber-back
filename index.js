@@ -28,7 +28,7 @@ function verifyToken(req, res, next) {
   });
 }
 
-async function mergeAndHash(password) {
+async function mergeAndHash(password) {  //Usar para o tópico 2 e 3 para obter chaves
   const randomNumber = Math.floor(Math.random() * 1000000);
 
   const mergedString = password + randomNumber.toString();
