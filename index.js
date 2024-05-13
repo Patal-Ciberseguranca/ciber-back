@@ -28,6 +28,21 @@ function verifyToken(req, res, next) {
   });
 }
 
+async function mergeAndHash(password) {
+  const randomNumber = Math.floor(Math.random() * 1000000);
+
+  const mergedString = password + randomNumber.toString();
+
+  const hash = crypto.createHash('sha256').update(mergedString).digest();
+
+  const paddedHash = Buffer.alloc(8);
+  hash.copy(paddedHash);
+
+  const hexPassword = paddedHash.toString('hex');
+
+  return hexPassword;
+}
+
 app.get('/', cors(), (req, res) => {});
 
 app.post('/login', async (req, res) => {
@@ -70,12 +85,15 @@ app.post('/register', async (req, res) => {
     } else {
       // Criar Hash da Password usando BCrypt
       const hashedPassword = await bcrypt.hash(password, 10);
+      const hexEncryptionKey = await mergeAndHash(password);
 
+      console.log("Chave de Cifra em HEX: "+hexEncryptionKey);
 
       const data = {
         username: username,
         email: email,
         password: hashedPassword,
+        encryptionKey: hexEncryptionKey,
       };
     
       await collection.insertMany([data]);
