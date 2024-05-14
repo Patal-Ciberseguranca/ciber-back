@@ -24,6 +24,9 @@ const usersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  randomNumber: {
+    type: Number,
+  },
 });
 
 const collection = mongoose.model('Users', usersSchema);

@@ -19,13 +19,14 @@ function generateRandomNumber() {
   return Math.floor(Math.random() * 1000000); // Altere conforme necessário para atender aos requisitos de unicidade
 }
 
-// Função para criar um hash com bcrypt 1024 vezes
+// Função para criar um hash com Crypt 1024 vezes
 async function hashKeyWithIterations(key) {
   const saltRounds = 10; // Número de rounds de hash do bcrypt
   let hashedKey = crypto.createHash('sha256').update(key).digest();
   for (let i = 0; i < 1024; i++) {
-    hashedKey = crypto.createHash('sha256').update(hashedKey).digest();
+    hashedKey = crypto.createHash('sha256').update(hashedKey).digest().slice(0, 8);
   }
+
   hashedKey = hashedKey.toString('hex');
   return hashedKey;
 }
@@ -57,11 +58,10 @@ app.post('/login', async (req, res) => {
 
     if (check) {
       const matchPassword = await bcrypt.compare(password, check.password);
-      if (matchPassword){
 
-        const randomNumber = generateRandomNumber();
+      if (matchPassword){
         // Concatenar senha com número aleatório
-        const key = password + randomNumber.toString();
+        const key = password + check.randomNumber.toString();
         // Aplicar hash à concatenação 1024 vezes
         const hashedKey = await hashKeyWithIterations(key);
 
@@ -100,10 +100,14 @@ app.post('/register', async (req, res) => {
       // Criar Hash da Password usando BCrypt
       const hashedPassword = await bcrypt.hash(password, 10);
 
+      // Gerar Número Aleatório para cada Utilizador
+      const randomNumber = generateRandomNumber();
+
       const data = {
         username: username,
         email: email,
         password: hashedPassword,
+        randomNumber: randomNumber 
       };
     
       await collection.insertMany([data]);
