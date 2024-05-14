@@ -21,12 +21,10 @@ function generateRandomNumber() {
 
 // Função para criar um hash com Crypt 1024 vezes
 async function hashKeyWithIterations(key) {
-  const saltRounds = 10; // Número de rounds de hash do bcrypt
   let hashedKey = crypto.createHash('sha256').update(key).digest();
   for (let i = 0; i < 1024; i++) {
     hashedKey = crypto.createHash('sha256').update(hashedKey).digest().slice(0, 8);
   }
-
   hashedKey = hashedKey.toString('hex');
   return hashedKey;
 }
