@@ -14,6 +14,22 @@ app.use(cors());
 const JWT_SECRET = 'sua_chave_secreta_aqui';
 
 
+// Função para gerar um número aleatório único para cada usuário
+function generateRandomNumber() {
+  return Math.floor(Math.random() * 1000000); // Altere conforme necessário para atender aos requisitos de unicidade
+}
+
+// Função para criar um hash com bcrypt 1024 vezes
+async function hashKeyWithIterations(key) {
+  const saltRounds = 10; // Número de rounds de hash do bcrypt
+  let hashedKey = key;
+  for (let i = 0; i < 1024; i++) {
+    hashedKey = await bcrypt.hash(hashedKey, saltRounds);
+  }
+  return hashedKey;
+}
+
+
 // Função para verificar o token
 function verifyToken(req, res, next) {
   const token = req.headers['authorization'];
@@ -28,7 +44,7 @@ function verifyToken(req, res, next) {
   });
 }
 
-async function mergeAndHash(password) {  //Usar para o tópico 2 e 3 para obter chaves
+/* async function mergeAndHash(password) {  //Usar para o tópico 2 e 3 para obter chaves
   const randomNumber = Math.floor(Math.random() * 1000000);
 
   const mergedString = password + randomNumber.toString();
@@ -42,6 +58,7 @@ async function mergeAndHash(password) {  //Usar para o tópico 2 e 3 para obter 
 
   return hexPassword;
 }
+ */
 
 app.get('/', cors(), (req, res) => {});
 
@@ -54,12 +71,21 @@ app.post('/login', async (req, res) => {
     if (check) {
       const matchPassword = await bcrypt.compare(password, check.password);
       if (matchPassword){
+
+        const randomNumber = generateRandomNumber();
+        // Concatenar senha com número aleatório
+        const key = password + randomNumber.toString();
+        // Aplicar hash à concatenação 1024 vezes
+        const hashedKey = await hashKeyWithIterations(key);
+
+
         // Criação do token JWT
         const token = jwt.sign({ id: check._id }, JWT_SECRET, {
           expiresIn: 86400 // expira em 24 horas
         });
         res.header('authorization', token)
-        res.json({token, userId:check._id, message:'Sucesso'});
+        console.log("teste");
+        res.json({token, userId:check._id, key: hashedKey, message:'Sucesso'});
 
 
       } else {
@@ -85,15 +111,14 @@ app.post('/register', async (req, res) => {
     } else {
       // Criar Hash da Password usando BCrypt
       const hashedPassword = await bcrypt.hash(password, 10);
-      const hexEncryptionKey = await mergeAndHash(password);
+/*       const hexEncryptionKey = await mergeAndHash(password);
 
-      console.log("Chave de Cifra em HEX: "+hexEncryptionKey);
+      console.log("Chave de Cifra em HEX: "+hexEncryptionKey); */
 
       const data = {
         username: username,
         email: email,
         password: hashedPassword,
-        encryptionKey: hexEncryptionKey,
       };
     
       await collection.insertMany([data]);

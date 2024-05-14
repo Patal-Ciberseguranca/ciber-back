@@ -24,10 +24,6 @@ const usersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  encryptionKey: {
-    type: String, // ou Buffer, dependendo da representação da chave
-    required: true,
-  },
 });
 
 const collection = mongoose.model('Users', usersSchema);
