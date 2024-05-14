@@ -1,5 +1,5 @@
 const express = require('express');
-const collection = require('./mongo');
+const {collection, registos} = require('./mongo');
 const cors = require('cors');
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken');
@@ -48,6 +48,7 @@ function verifyToken(req, res, next) {
 
 
 app.get('/', cors(), (req, res) => {});
+
 
 // POST do Login
 app.post('/login', async (req, res) => {
@@ -123,6 +124,26 @@ app.post('/register', async (req, res) => {
   } catch (e) {
     res.status(500).json('Erro');
     console.log(e);
+  }
+});
+
+
+// POST para armazenar registros
+app.post('/registos', async (req, res) => {
+  const { textoCifrado } = req.body;
+
+  try {
+    const data = {
+      registo: textoCifrado
+    };
+
+    await registos.insertMany([data]);
+    console.log("Sucesso");
+
+    res.json({ success: true, mensagem: 'Registro cifrado armazenado com sucesso.' });
+  } catch (error) {
+    console.error('Erro ao armazenar registro cifrado:', error);
+    res.status(500).json({ success: false, mensagem: 'Erro ao armazenar registro cifrado.' });
   }
 });
 

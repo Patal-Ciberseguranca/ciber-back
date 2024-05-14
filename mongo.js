@@ -10,7 +10,7 @@ mongoose
   });
 
 
-
+// Schema para os users
 const usersSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -29,6 +29,19 @@ const usersSchema = new mongoose.Schema({
   },
 });
 
-const collection = mongoose.model('Users', usersSchema);
 
-module.exports = collection;
+// Schema para os registos
+const registosSchema = new mongoose.Schema({
+  registo: {
+    type: String,
+    required: true,
+  },
+});
+
+
+const collection = mongoose.model('Users', usersSchema);
+const registos = mongoose.model('Registos', registosSchema);
+
+
+module.exports = {collection, registos};
+
