@@ -22,10 +22,11 @@ function generateRandomNumber() {
 // Função para criar um hash com bcrypt 1024 vezes
 async function hashKeyWithIterations(key) {
   const saltRounds = 10; // Número de rounds de hash do bcrypt
-  let hashedKey = key;
+  let hashedKey = crypto.createHash('sha256').update(key).digest();
   for (let i = 0; i < 1024; i++) {
-    hashedKey = await bcrypt.hash(hashedKey, saltRounds);
+    hashedKey = crypto.createHash('sha256').update(hashedKey).digest();
   }
+  hashedKey = hashedKey.toString('hex');
   return hashedKey;
 }
 
@@ -84,7 +85,6 @@ app.post('/login', async (req, res) => {
           expiresIn: 86400 // expira em 24 horas
         });
         res.header('authorization', token)
-        console.log("teste");
         res.json({token, userId:check._id, key: hashedKey, message:'Sucesso'});
 
 
