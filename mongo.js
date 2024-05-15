@@ -32,6 +32,14 @@ const usersSchema = new mongoose.Schema({
 
 // Schema para os registos
 const registosSchema = new mongoose.Schema({
+  date: {
+    type: String,
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
   registo: {
     type: String,
     required: true,

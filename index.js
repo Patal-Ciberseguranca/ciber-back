@@ -128,10 +128,20 @@ app.post('/register', async (req, res) => {
 
 // POST para armazenar registros
 app.post('/registos', async (req, res) => {
-  const { textoCifrado } = req.body;
+  const { username, textoCifrado } = req.body;
+
+  var date = new Date();
+  var dd = date.getDate();
+  var mm = date.getMonth()+1;
+  var yyyy = date.getFullYear();
+  if(dd<10) dd="0"+dd
+  if(mm<10) mm="0"+mm
+  date = dd+"/"+mm+"/"+yyyy;
 
   try {
     const data = {
+      date: date,
+      username: username,
       registo: textoCifrado
     };
 
