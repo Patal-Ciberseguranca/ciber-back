@@ -39,8 +39,12 @@ const registosSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-  },
+  },  
   registo: {
+    type: String,
+    required: true,
+  },
+  hmac: {
     type: String,
     required: true,
   },

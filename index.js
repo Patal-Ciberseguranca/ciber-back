@@ -128,7 +128,7 @@ app.post('/register', async (req, res) => {
 
 // POST para armazenar registros
 app.post('/registos', async (req, res) => {
-  const { username, textoCifrado } = req.body;
+  const { username, textoCifrado, HMACmsg } = req.body;
 
   var date = new Date();
   var dd = date.getDate();
@@ -142,7 +142,8 @@ app.post('/registos', async (req, res) => {
     const data = {
       date: date,
       username: username,
-      registo: textoCifrado
+      registo: textoCifrado,
+      hmac: HMACmsg
     };
 
     await registos.insertMany([data]);
