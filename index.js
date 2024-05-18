@@ -156,6 +156,40 @@ app.post('/registos', async (req, res) => {
   }
 });
 
+// GET de todos os registos na BD
+app.get('/registos', async (req, res) =>{
+  try {
+    //Find de todos os registos
+    const cursor = await registos.find({});
+    //Array dos Registos
+    const allRegistos = [];
+    //Acrescentar cada registo a um array
+    await cursor.forEach(registo => {
+      allRegistos.push(registo);
+    });
+    //Mostrar os registos todos
+    res.json({ success: true, registos: allRegistos });
+  } catch (error) {
+    console.error('Erro ao buscar registros:', error);
+    res.status(500).json({ success: false, mensagem: 'Erro ao buscar registros.' });
+  }
+})
+
+
+// Isto acessa o username guardado nos dados local e procura os registos pelo user
+app.get('/registos/:username', async (req,res) =>{
+  try{
+    //acessar username
+    const username = req.params.username;
+    //pesquisar username
+    const cursor = await registos.find({username: username});
+    res.json({ success: true, registos: cursor });
+  }catch (error){
+    console.error('na deu ', error);
+    res.status(500).json({ success: false, mensagem: 'Erro ao buscar registros.' });
+  }
+});
+
 // Rota protegida
 app.get('/profile', verifyToken, (req, res) => {
   res.json('Conteúdo protegido');
