@@ -29,7 +29,7 @@ const usersSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  tipoCifra: {
+  cipherMode: {
     type: String,
     enum: ['AES-128-CBC', 'AES-128-CTR'],
     required: true,
@@ -53,11 +53,6 @@ const registosSchema = new mongoose.Schema({
   },
   hmac: {
     type: String,
-    required: true,
-  },
-  cipherMode: {
-    type: String,
-    enum: ['AES-128-CBC', 'AES-128-CTR'],
     required: true,
   },
 });

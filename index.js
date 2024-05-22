@@ -70,7 +70,7 @@ app.post('/login', async (req, res) => {
           expiresIn: 86400 // expira em 24 horas
         });
         res.header('authorization', token)
-        res.json({token, userId:check._id, key: hashedKey, message:'Sucesso'});
+        res.json({token, userId:check._id, key: hashedKey, message:'Sucesso', cipherMode: check.cipherMode});
 
 
       } else {
@@ -88,7 +88,7 @@ app.post('/login', async (req, res) => {
 
 // POST do Registo
 app.post('/register', async (req, res) => {
-  const { username, email, password, tipoCifra } = req.body;
+  const { username, email, password, cipherMode } = req.body;
 
   try {
     const check = await collection.findOne({ username: username });
@@ -102,14 +102,16 @@ app.post('/register', async (req, res) => {
       // Gerar Número Aleatório para cada Utilizador
       const randomNumber = generateRandomNumber();
 
+      
       const data = {
         username: username,
         email: email,
         password: hashedPassword,
         randomNumber: randomNumber,
-        tipoCifra: tipoCifra,
+        cipherMode: cipherMode,
       };
-    
+      
+      console.log(data)
       await collection.insertMany([data]);
       
       // Criação do token JWT
