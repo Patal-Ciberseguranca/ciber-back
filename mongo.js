@@ -23,9 +23,16 @@ const usersSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+    required: true,
   },
   randomNumber: {
     type: Number,
+    required: true,
+  },
+  tipoCifra: {
+    type: String,
+    enum: ['AES-128-CBC', 'AES-128-CTR'],
+    required: true,
   },
 });
 
@@ -46,6 +53,11 @@ const registosSchema = new mongoose.Schema({
   },
   hmac: {
     type: String,
+    required: true,
+  },
+  cipherMode: {
+    type: String,
+    enum: ['AES-128-CBC', 'AES-128-CTR'],
     required: true,
   },
 });

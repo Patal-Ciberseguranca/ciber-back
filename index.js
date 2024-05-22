@@ -88,7 +88,7 @@ app.post('/login', async (req, res) => {
 
 // POST do Registo
 app.post('/register', async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, tipoCifra } = req.body;
 
   try {
     const check = await collection.findOne({ username: username });
@@ -106,7 +106,8 @@ app.post('/register', async (req, res) => {
         username: username,
         email: email,
         password: hashedPassword,
-        randomNumber: randomNumber 
+        randomNumber: randomNumber,
+        tipoCifra: tipoCifra,
       };
     
       await collection.insertMany([data]);
@@ -128,7 +129,7 @@ app.post('/register', async (req, res) => {
 
 // POST para armazenar registros
 app.post('/registos', async (req, res) => {
-  const { username, textoCifrado, HMACmsg } = req.body;
+  const { username, textoCifrado, HMACmsg, cipherMode } = req.body;
 
   var date = new Date();
   var dd = date.getDate();
@@ -143,7 +144,8 @@ app.post('/registos', async (req, res) => {
       date: date,
       username: username,
       registo: textoCifrado,
-      hmac: HMACmsg
+      hmac: HMACmsg,
+      cipherMode: cipherMode
     };
 
     await registos.insertMany([data]);
