@@ -34,6 +34,11 @@ const usersSchema = new mongoose.Schema({
     enum: ['AES-128-CBC', 'AES-128-CTR'],
     required: true,
   },
+  hmacMode: {
+    type: String,
+    enum: ['SHA256', 'SHA512'],
+    required: true,
+  },
 });
 
 

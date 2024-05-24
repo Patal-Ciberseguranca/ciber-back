@@ -70,7 +70,7 @@ app.post('/login', async (req, res) => {
           expiresIn: 86400 // expira em 24 horas
         });
         res.header('authorization', token)
-        res.json({token, userId:check._id, key: hashedKey, message:'Sucesso', cipherMode: check.cipherMode});
+        res.json({token, userId:check._id, key: hashedKey, message:'Sucesso', cipherMode: check.cipherMode, hmacMode: check.hmacMode});
 
 
       } else {
@@ -88,7 +88,7 @@ app.post('/login', async (req, res) => {
 
 // POST do Registo
 app.post('/register', async (req, res) => {
-  const { username, email, password, cipherMode } = req.body;
+  const { username, email, password, cipherMode, hmacMode } = req.body;
 
   try {
     const check = await collection.findOne({ username: username });
@@ -109,6 +109,7 @@ app.post('/register', async (req, res) => {
         password: hashedPassword,
         randomNumber: randomNumber,
         cipherMode: cipherMode,
+        hmacMode: hmacMode
       };
       
       console.log(data)
@@ -131,7 +132,7 @@ app.post('/register', async (req, res) => {
 
 // POST para armazenar registros
 app.post('/registos', async (req, res) => {
-  const { username, textoCifrado, HMACmsg, cipherMode } = req.body;
+  const { username, textoCifrado, HMACmsg, cipherMode, hmacMode } = req.body;
 
   var date = new Date();
   var dd = date.getDate();
@@ -147,7 +148,8 @@ app.post('/registos', async (req, res) => {
       username: username,
       registo: textoCifrado,
       hmac: HMACmsg,
-      cipherMode: cipherMode
+      cipherMode: cipherMode,
+      hmacMode: hmacMode
     };
 
     await registos.insertMany([data]);
